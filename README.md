@@ -1,2 +1,2 @@
 # graphsjs
-Reusable graph visualisations in JavaScript
+Reusable graph components for tough data visualisation problems in JavaScript
