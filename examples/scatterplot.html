@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>Scatterplot with labels</title>
+		<style>
+			body {
+  				font-family: "Helvetica Neue", Helvetica, sans-serif;
+				color:#333;
+			}
+			h1 {
+				font-weight:normal;
+				font-size:30px;
+			}
+			p {
+				line-height: 1.6;
+			}
+		</style>
+    	<link rel="stylesheet" href="../src/scatterplot/scplt.css" type="text/css">
+	</head>
+	<body>
+		<h1>Scatterplot with labels</h1>
+		<p>Fuel consumption and gross horsepower of automobile design for 32 automobiles. 1973–74 models.</p>
+	  
+		<div id="graph"></div>
+
+		<p>Visualizatoin based on <a href="http://d3js.org">D3</a> and <a href="http://bl.ocks.org/MoritzStefaner/1377729">http://bl.ocks.org/MoritzStefaner/1377729</a>. Data source: 1974 Motor Trend US magazine.</p>
+		
+		<script src="../lib/d3js.org/d3.v3.min.js"></script>
+		<script src="../src/scatterplot/scplt.js"></script>
+		<script type="text/javascript">
+		
+		d3.tsv("data/mtcars.tsv", 
+		  function(d,i){
+		    d.x = +d.hp;
+		    d.y = +d.mpg;
+		    return d;
+		  },
+		  function(d){
+		    
+		    // remove labels from all datapoints except the 4 with the largest
+		    // distance to all other datapoints.
+		    //Scatterplot.prototype.pruneLabels(d, 1);
+		    //console.log(d);
+		    
+		    scplt = new Scatterplot("#graph", d);
+		    scplt
+				.xlabel("HP")
+				.ylabel("MPG");
+		  });
+
+		</script>
+    
+	</body>
+</html>

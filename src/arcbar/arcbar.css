@@ -1,0 +1,29 @@
+svg.arcbar {
+	font: 10px sans-serif;
+}
+
+.axis path,
+.axis line {
+	fill: none;
+	stroke: #555;
+	shape-rendering: crispEdges;
+}
+
+.outline {
+    fill: none;
+    stroke: #666;
+    stroke-width: 1px;
+}
+
+.node {
+    stroke: none;
+    stroke-weight: 0px;
+}
+
+.link {
+    fill: none;
+    stroke: #666;
+    stroke-weight: 1px;
+    stroke-opacity: 0.15;
+}
+

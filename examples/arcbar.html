@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>Directed graph</title>
+		<style>
+			body {
+  				font-family: "Helvetica Neue", Helvetica, sans-serif;
+				color:#333;
+			}
+			h1 {
+				font-weight:normal;
+				font-size:30px;
+			}
+			p {
+				line-height: 1.6;
+			}
+		</style>
+		<link rel="stylesheet" href="../src/arcbar/arcbar.css" type="text/css">
+	</head>
+	<body>
+		<h1>Directed graph (linear layout)</h1>
+		<p>Target countries of refugees and people in refugee-like situations in the year 2013.</p>
+
+		<div id="graph"></div>
+
+		<p>Visualizatoin based on <a href="http://d3js.org">D3</a> and <a href="http://bl.ocks.org/sjengle/5431779">http://bl.ocks.org/sjengle/5431779</a>. Data source: <a href="http://data.un.org/Data.aspx?d=UNHCR&f=indID%3AType-Ref">UNHCR refugee data</a>.</p>
+
+		<script src="../lib/d3js.org/d3.v3.min.js"></script>
+		<script src="../src/arcbar/arcbar.js"></script>
+		<script type="text/javascript">
+
+		var graph;
+
+		d3.csv("data/un.org/UNdata_Export_20151206_210306017.csv", function(error, rawdata){
+
+			rawdata = rawdata.filter(function(d){
+				return ["", "fnSeqID", "*", "**"].indexOf(d["Country or territory of asylum or residence"]) < 0;
+			});
+
+			VALUEKEY="Total refugees and people in refugee-like situations<sup>**</sup>";
+			
+			data = {nodes:[], links:[]};
+
+			tmpnodes = {};
+
+			// create node data				
+			rawdata.forEach(function(d){
+				if (tmpnodes.hasOwnProperty(d["Country or territory of asylum or residence"])) {
+					tmpnodes[d["Country or territory of asylum or residence"]].value += +d[VALUEKEY];
+				}
+				else {
+					tmpnodes[d["Country or territory of asylum or residence"]]={"value":+d[VALUEKEY]};
+				}
+				
+				if (!tmpnodes.hasOwnProperty(d["Country or territory of origin"])) {
+					tmpnodes[d["Country or territory of origin"]]={"value":0};
+				}
+			});
+
+			// add nodes to graph datastructure and store indexes for later lookup
+			idx=0;
+			for (var key in tmpnodes) {
+  				if (tmpnodes.hasOwnProperty(key)) {
+					data.nodes.push({"name":key, "group":1, "value":tmpnodes[key].value});    				
+					tmpnodes[key].idx = idx;
+					idx++;
+				}
+			}
+
+			// add links to graph datastructre					
+			rawdata.forEach(function(d){
+				data.links.push({
+					"source":tmpnodes[d["Country or territory of origin"]].idx
+					, "target":tmpnodes[d["Country or territory of asylum or residence"]].idx
+					, "value":+d[VALUEKEY]
+				});
+			});
+			
+			graph = new Arcbar("#graph", data.nodes, data.links);
+		});
+
+		</script>
+	</body>
+</html>
