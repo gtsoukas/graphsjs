@@ -79,7 +79,14 @@
 					}
 				});
 
-				graph = new Digraph("#graph", data.nodes, data.links);
+				graph = new Digraph(
+					"#graph"
+					, data.nodes
+					, data.links
+					, {"width": 960, "height": 700, "MIN_NODE_RADIUS": 5, "MAX_NODE_RADIUS": 20}
+				);
+				graph.forceLayout(graph.draw, {"charge":-200});
+				
 			});
 
 		</script>
