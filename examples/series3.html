@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>Series graph</title>
+		<style>
+			body {
+  			font-family: "Helvetica Neue", Helvetica, sans-serif;
+				color:#333;
+			}
+			h1 {
+				font-weight:normal;
+				font-size:30px;
+			}
+			p {
+				line-height:1.6;
+			}
+		</style>
+		<link rel="stylesheet" href="../src/series/series.css" type="text/css">
+	</head>
+	<body>
+
+		<h1>Time series graph</h1>
+		<p>Atmospheric CO2 at Mauna Loa Observatory vs. global land and ocean temperature</p>
+
+		<div id="graph"></div>
+
+		<p>Visualizatoin based on <a href="http://d3js.org">D3</a>. Data sources:
+      <a href="http://www.esrl.noaa.gov/gmd/ccgg/trends/">NOAA / Earth System
+      Research Laboratory</a> and NOAA National Climatic Data Center (NCDC), global component of Climate at a Glance (GCAG) accessed via <a href="http://data.okfn.org/data/core/global-temp">data.okfn.org</a>.</p>
+
+		<script src="../lib/d3js.org/d3.min.js"></script>
+		<script src="../src/series/series.js"></script>
+		<script type="text/javascript">
+
+     var graph;
+
+     d3.queue()
+      .defer(d3.tsv, "data/noaa.gov/co2_mm_mlo.tsv")
+      .defer(d3.tsv, "data/data.okfn.org/GCAG.tsv")
+      .await(function(error, d1, d2) {
+        if(error){alert("Error while loading dataset");}
+
+        //console.log(d1, d2);
+
+        data = d1.map(function(d){
+          return {"date":new Date(d.date), "value":+d.interpolated};
+        });
+
+        data2 = d2.map(function(d){
+          return {"date":new Date(d.date), "value":+d.value};
+        });
+
+        //console.log(data, data2);
+
+        graph = new SeriesGraph("#graph");
+
+        graph.addY1Series(data);
+        graph.addY2Series(data2);
+        graph.timeFormat(d3.timeFormat("%Y-%m"));
+        graph.y1Unit("ppm");
+        graph.y2Unit("°C");
+        graph.draw();
+
+        if(data.length > graph.width){
+          console.warn("more data points than pixels (" + data.length + ", "
+            + graph.width + ")");    
+        }
+
+      });
+
+		</script>
+	</body>
+</html>

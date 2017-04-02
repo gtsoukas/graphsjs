@@ -1,0 +1,135 @@
+.sgraph-container{
+  position: relative;
+}
+
+.sgraph{
+  font: 10px sans-serif;
+}
+
+.sg-axis path,
+.sg-axis line {
+  fill: none;
+  shape-rendering: crispEdges;
+  stroke: #555;
+}
+
+.x.sg-axis path {
+  display: none;
+}
+
+.sg-y1line {
+  fill: none;
+  stroke-width: 1px;
+  stroke: steelblue;
+}
+
+.sg-y2line {
+  fill: none;
+  stroke-width: 1px;
+  stroke: darkorange;
+}
+
+.sg-overlay {
+  fill: none;
+  pointer-events: all;
+}
+
+.sg-focus circle {
+  fill: none;
+  stroke: black;
+}
+
+.sg-focus line {
+  stroke: black;
+  shape-rendering: crispEdges;
+  stroke-width: 1px;
+}
+
+.sg-event circle {
+  fill: #056438;
+  opacity: 0.5;
+  stroke: #056438;
+}
+
+.sg-y1-axis-title,
+.sg-y2-axis-title {
+  fill: black;
+  font-size: 14px;
+}
+
+.sg-event-label-left,
+.sg-event-label-right {
+  position: relative;
+  background: white;
+  border: 1px solid #056438;
+  box-shadow: 0px 0px 10px #ddd;
+  font: 10px sans-serif;
+  opacity: 0.95;
+  z-index: 100;
+}
+
+.sg-event-label-left:after,
+.sg-event-label-left:before {
+  border: solid transparent;
+  content: " ";
+  height: 0;
+  left: 100%;
+  pointer-events: none;
+  position: absolute;
+  top: 6px;
+  width: 0;
+}
+
+.sg-event-label-left:after {
+  border-color: solid transparent;
+  border-left-color: white;
+  border-width: 6px;
+  margin-top: -6px;
+}
+
+.sg-event-label-left:before {
+  border-color: solid transparent;
+  border-left-color: #056438;
+  border-width: 7px;
+  margin-top: -7px;
+}
+
+.sg-event-label-left p,
+.sg-event-label-right p {
+  padding-left: 6px;
+  padding-right: 6px;
+  -webkit-margin-before: 6px;
+  -webkit-margin-after: 6px;
+}
+
+.sg-event-focus {
+  fill: none;
+  stroke: black;
+}
+
+.sg-event-label-right:after,
+.sg-event-label-right:before {
+  border: solid transparent;
+  content: " ";
+  height: 0;
+  pointer-events: none;
+  position: absolute;
+  right: 100%;
+  top: 6px;
+  width: 0;
+}
+
+.sg-event-label-right:after {
+  border-color: solid transparent;
+  border-right-color: white;
+  border-width: 6px;
+  margin-top: -6px;
+}
+
+.sg-event-label-right:before {
+  border-color: solid transparent;
+  border-right-color: #056438;
+  border-width: 7px;
+  margin-top: -7px;
+}
+
