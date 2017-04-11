@@ -35,8 +35,8 @@
 }
 
 .sg-focus circle {
-  fill: none;
-  stroke: black;
+  fill: steelblue;
+  stroke: none;
 }
 
 .sg-focus line {
