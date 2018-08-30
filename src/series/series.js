@@ -12,7 +12,7 @@ TODO:
   improved transitions
 */
 function SeriesGraph(htmlelement){
-	
+
   var me = this;
 
   this.htmlelement = htmlelement;
@@ -23,6 +23,9 @@ function SeriesGraph(htmlelement){
   this.datelist = [];
   this.y1unit = "";
   this.y2unit = "";
+	this.y1colors = ["red", "green", "blue"];
+	this.y2colors = ["cyan", "magenta", "yellow"];
+	this.eventcolors = ["steelblue", "lime", "orange"];
   this.transduration = 400;
   this.formatValue = d3.format(",.2f");
   this.formatDate = d3.timeFormat("%b %d, %a %H:%M");
@@ -35,14 +38,14 @@ function SeriesGraph(htmlelement){
   this.x = d3.scaleTime();
 
   this.y1 = d3.scaleLinear();
-      
+
   this.y2 = d3.scaleLinear();
 
   this.xAxis = d3.axisBottom(this.x);
 
   this.y1Axis = d3.axisLeft(this.y1);
 
-  this.y2Axis = d3.axisRight(this.y2);	
+  this.y2Axis = d3.axisRight(this.y2);
 
   this.line = d3.line()
     .x(function(d) { return me.x(d.date); })
@@ -58,7 +61,7 @@ SeriesGraph.prototype = {
 
   /**
   * Add a new series graph to an existing HTML-element
-  */ 	
+  */
   constructor: SeriesGraph,
 
   /**
@@ -66,21 +69,21 @@ SeriesGraph.prototype = {
   *
   * The series parameter must be an array containing objects with a "date" and
   * a "value" property.
-  */ 
+  */
   addY1Series: function(series){
     this.y1data.push(series)
   },
 
   /**
   * Add time series to secondary axis
-  */ 
+  */
   addY2Series: function(series){
     this.y2data.push(series)
   },
 
   /**
   * Add event series to time axis
-  */ 
+  */
   addEventSeries: function(series){
     //this.eventdata.push(series)
     if(this.eventdata.length>0){
@@ -91,7 +94,7 @@ SeriesGraph.prototype = {
 
   /**
   * Remove all time series and event data sets
-  */ 
+  */
   removeAllSeries: function(series){
     this.y1data = [];
     this.y2data = [];
@@ -100,7 +103,7 @@ SeriesGraph.prototype = {
 
   /**
   * Get or set unit label for primary y axis
-  */		
+  */
   y1Unit: function(_){
     if (!arguments.length) return this.y1unit;
     this.y1unit = _;
@@ -109,16 +112,40 @@ SeriesGraph.prototype = {
 
   /**
   * Get or set unit label for secondary y axis
-  */	
+  */
   y2Unit: function(_){
     if (!arguments.length) return this.y2unit;
     this.y2unit = _;
     //this.svg.select(".sg-y2-series-title").text(_);
   },
 
+	/**
+	* Get or set colors for primary y axis
+	*/
+	y1Colors: function(_){
+		if (!arguments.length) return this.y1colors;
+		this.y1colors = _;
+	},
+
+	/**
+	* Get or set colors for secondary y axis
+	*/
+	y2Colors: function(_){
+		if (!arguments.length) return this.y2colors;
+		this.y2colors = _;
+	},
+
+	/**
+	* Get or set colors for event axis
+	*/
+	eventColors: function(_){
+		if (!arguments.length) return this.eventcolors;
+		this.eventcolors = _;
+	},
+
   /**
   * Get or set time axis label formatting
-  */	
+  */
   timeFormat: function(_){
     if (!arguments.length) return this.formatDate;
     this.formatDate = _;
@@ -126,9 +153,9 @@ SeriesGraph.prototype = {
 
   /**
   * Render the graph
-  */  
+  */
   draw: function(){
-		
+
     var me = this;
 
     this.width = d3.select(this.htmlelement).style("width").replace("px", "") - this.margin.left - this.margin.right;
@@ -200,6 +227,7 @@ SeriesGraph.prototype = {
       for(var i=0; i<this.y1data.length; i++){
         g.append("path")
           .attr("class", "sg-y1line line"+i)
+					.style("stroke", me.y1colors[i])
           .attr("d", this.line(this.y1data[i]));
       }
 
@@ -207,6 +235,7 @@ SeriesGraph.prototype = {
       for(var i=0; i<this.y2data.length; i++){
         g.append("path")
           .attr("class", "sg-y2line line"+i)
+					.style("stroke", me.y2colors[i])
           .attr("d", this.line2(this.y2data[i]));
       }
 
@@ -282,6 +311,7 @@ SeriesGraph.prototype = {
 		    .attr("r", 5)
 		    .attr("cx", function(d) { return me.x(d.date); })
 		    .attr("cy", me.eheight)
+				.style("fill", me.eventcolors[0])
       .transition()
         .duration(this.transduration);
 
@@ -317,7 +347,7 @@ SeriesGraph.prototype = {
     var focus = g.append("g")
       .attr("class", "sg-focus")
       .style("display", "none");
-	      
+
     focus.append("line")
       .attr("x1", 0)
       .attr("y1", 230)
@@ -329,18 +359,19 @@ SeriesGraph.prototype = {
     tslabel.append("rect")
       .attr("y", 242)
       .style("fill","white");
-		
+
     tslabel.append("text")
       .attr("class", "sg-date-label")
       .attr("y", 246)
       .style("text-anchor", "middle");
-	      
+
     var edatapoint = focus.append("g")
       .attr("class","sg-edatapoint");
 
     edatapoint.append("circle")
-      .attr("r", 4.5);
-	
+      .attr("r", 4.5)
+			.style("fill", "none");
+
     g.append("rect")
       .attr("class", "sg-overlay")
       .attr("width", this.width)
@@ -348,15 +379,15 @@ SeriesGraph.prototype = {
       .on("mouseover", function() { focus.style("display", null); })
       .on("mouseout", function() { focus.style("display", "none"); })
       .on("mousemove", mousemove);
-	      
+
     d3.select(this.htmlelement).append("div")
       .attr("id", "sg-event-label")
       .style("position", "absolute")
       .style("left", "0")
-      .style("top", "0");    
+      .style("top", "0");
 
     this.bisectDate = d3.bisector(function(d) { return d; }).left;
-	  
+
     function mousemove() {
       var x0 = me.x.invert(d3.mouse(this)[0]);
       var i = me.bisectDate(me.datelist, x0, 1);
@@ -385,16 +416,17 @@ SeriesGraph.prototype = {
         .attr("height", bbox.height +4);
 
       var tmpdps = me.dateidx[d.getTime()];
-	    	
+
       if(tmpdps.y1v != undefined){
-        tmpdps.y1v.forEach(function(d){
+        tmpdps.y1v.forEach((d,i)  => {
 
           var y1datapoint = focus.append("g")
             .attr("class","sg-datapoint")
             .attr("transform", "translate(0," + me.y1(d.value) + ")");
 
           y1datapoint.append("circle")
-            .attr("r", 4.5);
+            .attr("r", 4.5)
+						.style("fill", me.y1colors[i]);
 
           y1datapoint.append("rect")
             .style("fill","white")
@@ -424,14 +456,15 @@ SeriesGraph.prototype = {
       }
 
       if(tmpdps.y2v != undefined){
-        tmpdps.y2v.forEach(function(d){
+        tmpdps.y2v.forEach((d,i)  => {
 
           var y2datapoint = focus.append("g")
             .attr("class","sg-datapoint")
-            .attr("transform", "translate(0," + me.y2(d.value) + ")");    
+            .attr("transform", "translate(0," + me.y2(d.value) + ")");
 
           y2datapoint.append("circle")
-            .attr("r", 4.5);
+            .attr("r", 4.5)
+						.style("fill", me.y2colors[i]);
 
           y2datapoint.append("rect")
             .style("fill","white")
@@ -469,7 +502,7 @@ SeriesGraph.prototype = {
 
       focus.select(".sg-edatapoint")
         .attr("transform", "translate(0," + me.eheight + ")");
-	   
+
       if(tmpdps.events.length > 0){
         me.removeEventLabels();
         etmp = [];
@@ -477,7 +510,7 @@ SeriesGraph.prototype = {
 
         me.addEventLabels(etmp);
       }
-	
+
     }
 
     g.on("mouseout",function(){
@@ -502,7 +535,7 @@ SeriesGraph.prototype = {
     var me = this;
 
     var g = this.svg.select("g");
-		
+
     // focus circles
     d.forEach(function(p){
       g.append("circle")
@@ -528,7 +561,7 @@ SeriesGraph.prototype = {
     // display right from datapoint
     else{
 	    l.attr("class", "sg-event-label-right")
-		    .style("right", undefined)	
+		    .style("right", undefined)
 		    .style("left", (xtmp+12)+"px");
     }
     l.html(function(){
@@ -536,7 +569,7 @@ SeriesGraph.prototype = {
     });
 
   },
-	
+
   removeEventLabels: function(){
     d3.select(this.htmlelement).selectAll(".sg-event-label-left, .sg-event-label-right, .sg-event-focus").remove();
   }

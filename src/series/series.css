@@ -48,7 +48,7 @@
 .sg-event circle {
   fill: #056438;
   opacity: 0.5;
-  stroke: #056438;
+  /*stroke: #056438;*/
 }
 
 .sg-y1-axis-title,
@@ -132,4 +132,3 @@
   border-width: 7px;
   margin-top: -7px;
 }
-
