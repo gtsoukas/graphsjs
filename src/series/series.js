@@ -161,19 +161,21 @@ SeriesGraph.prototype = {
     this.width = d3.select(this.htmlelement).style("width").replace("px", "") - this.margin.left - this.margin.right;
 
     // populate date index and set axis domains
-    this.dateidx = {};
-    this.y1.domain(d3.extent(me.y1data[0], function(d) { return d.value; }));
-    for(i=0; i< this.y1data.length; i++){
-      this.y1data[i].forEach(function(k){
-        t = k.date.getTime();
-        if(me.dateidx[t] == undefined){
-	        me.dateidx[t] = {"date":k.date, "y1v":[], "y2v":[], "events":[]};
-        }
-        me.dateidx[t].y1v.push({"index":i, "value":k.value});
+    if(this.y1data.length > 0){
+      this.dateidx = {};
+      this.y1.domain(d3.extent(me.y1data[0], function(d) { return d.value; }));
+      for(i=0; i< this.y1data.length; i++){
+        this.y1data[i].forEach(function(k){
+          t = k.date.getTime();
+          if(me.dateidx[t] == undefined){
+  	        me.dateidx[t] = {"date":k.date, "y1v":[], "y2v":[], "events":[]};
+          }
+          me.dateidx[t].y1v.push({"index":i, "value":k.value});
 
-        if(me.y1.domain()[0] > k.value) me.y1.domain([k.value, me.y1.domain()[1]]);
-        if(me.y1.domain()[1] < k.value) me.y1.domain([me.y1.domain()[0], k.value]);
-      });
+          if(me.y1.domain()[0] > k.value) me.y1.domain([k.value, me.y1.domain()[1]]);
+          if(me.y1.domain()[1] < k.value) me.y1.domain([me.y1.domain()[0], k.value]);
+        });
+      }
     }
     this.eventdata.forEach(function(k){
       t= k.date.getTime();
